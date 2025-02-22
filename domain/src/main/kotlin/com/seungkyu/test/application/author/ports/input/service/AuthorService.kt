@@ -11,7 +11,9 @@ interface AuthorService {
 
     fun authorsInfo(): AuthorInfoResponses
 
-    fun updateAuthor(@Valid updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse
+    fun updateAuthor(
+        id: Int,
+        @Valid updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse
 
     fun deleteAuthor(authorId: Int)
 

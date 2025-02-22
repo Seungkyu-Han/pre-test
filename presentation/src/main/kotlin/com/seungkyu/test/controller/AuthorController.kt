@@ -1,9 +1,6 @@
 package com.seungkyu.test.controller
 
-import com.seungkyu.test.application.author.dto.AuthorInfoResponse
-import com.seungkyu.test.application.author.dto.AuthorInfoResponses
-import com.seungkyu.test.application.author.dto.CreateAuthorCommand
-import com.seungkyu.test.application.author.dto.CreateAuthorResponse
+import com.seungkyu.test.application.author.dto.*
 import com.seungkyu.test.application.author.ports.input.service.AuthorService
 import com.seungkyu.test.controller.exceptionHandler.errorResponse.ErrorResponseDto
 import io.swagger.v3.oas.annotations.Operation
@@ -78,4 +75,29 @@ class AuthorController(
     )
     fun getAuthor(@PathVariable id: Int): ResponseEntity<AuthorInfoResponse> =
         ResponseEntity.ok(authorService.authorInfo(authorId = id))
+
+    @PutMapping("/{id}")
+    @Operation(
+        summary = "작가의 정보를 수정하는 API입니다.",
+        description = "작가의 정보를 수정하는 API이며, 변경하지 않는 항목이더라도 입력해주셔야 합니다."
+    )
+    @Parameters(
+        Parameter(name = "id", description = "수정할 작가의 id", example = "1", required = true),
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "변경에 성공했습니다.",
+            content = [Content(schema = Schema(implementation = AuthorInfoResponse::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+        ApiResponse(responseCode = "404", description = "존재하지 않는 작가입니다.",
+            content = [Content(schema = Schema(implementation = ErrorResponseDto::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+        ApiResponse(responseCode = "409", description = "중복되는 이메일이 존재합니다.",
+            content = [Content(schema = Schema(implementation = ErrorResponseDto::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+    )
+    fun putAuthor(
+        @PathVariable id: Int,
+        @RequestBody updateAuthorCommand: UpdateAuthorCommand): ResponseEntity<AuthorInfoResponse> =
+        ResponseEntity.ok(authorService.updateAuthor(id = id, updateAuthorCommand = updateAuthorCommand))
+
 }

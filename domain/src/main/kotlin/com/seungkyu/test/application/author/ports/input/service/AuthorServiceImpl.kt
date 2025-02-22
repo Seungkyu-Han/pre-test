@@ -41,8 +41,10 @@ class AuthorServiceImpl(
     }
 
     @Transactional
-    override fun updateAuthor(@Valid updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
-        val author = authorRepository.findById(updateAuthorCommand.id)
+    override fun updateAuthor(
+        id: Int,
+        @Valid updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
+        val author = authorRepository.findById(id)
 
         authorDomainService.updateAuthor(
             author = author,
