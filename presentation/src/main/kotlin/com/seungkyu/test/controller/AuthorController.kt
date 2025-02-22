@@ -100,4 +100,27 @@ class AuthorController(
         @RequestBody updateAuthorCommand: UpdateAuthorCommand): ResponseEntity<AuthorInfoResponse> =
         ResponseEntity.ok(authorService.updateAuthor(id = id, updateAuthorCommand = updateAuthorCommand))
 
+    @DeleteMapping("/{id}")
+    @Operation(
+        summary = "작가의 정보를 삭제하는 API입니다.",
+        description = "작가의 정보를 삭제하는 API이며, \n" +
+                "해당 작가의 도서 정보가 남아있을 경우 삭제가 불가능합니다."
+    )
+    @Parameters(
+        Parameter(name = "id", description = "삭제할 작가의 id", example = "1", required = true),
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "삭제에 성공했습니다.",
+            content = [Content(schema = Schema(implementation = AuthorInfoResponse::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+        ApiResponse(responseCode = "404", description = "존재하지 않는 작가입니다.",
+            content = [Content(schema = Schema(implementation = ErrorResponseDto::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+        ApiResponse(responseCode = "409", description = "남아있는 도서 정보가 있기 때문에 삭제가 불가능합니다",
+            content = [Content(schema = Schema(implementation = ErrorResponseDto::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+    )
+    fun deleteAuthor(@PathVariable id: Int): ResponseEntity<Unit> =
+        ResponseEntity.ok(authorService.deleteAuthor(authorId = id))
+
 }
