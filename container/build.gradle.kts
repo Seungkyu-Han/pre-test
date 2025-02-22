@@ -10,6 +10,9 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
+
+    implementation(project(":presentation"))
+    implementation(project(":persistence"))
 }
 
 tasks.test {
