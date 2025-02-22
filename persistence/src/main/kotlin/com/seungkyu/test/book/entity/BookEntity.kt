@@ -1,5 +1,6 @@
 package com.seungkyu.test.book.entity
 
+import com.seungkyu.test.author.entity.AuthorEntity
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -18,5 +19,6 @@ data class BookEntity(
 
     val publicationDate: LocalDate,
 
-    val authorId: Int,
+    @ManyToOne
+    val author: AuthorEntity,
 )
