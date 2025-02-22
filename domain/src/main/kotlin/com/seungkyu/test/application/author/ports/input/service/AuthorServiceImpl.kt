@@ -4,8 +4,6 @@ import com.seungkyu.test.application.author.dto.AuthorInfoResponse
 import com.seungkyu.test.application.author.dto.CreateAuthorResponse
 import com.seungkyu.test.application.author.dto.CreateAuthorCommand
 import com.seungkyu.test.application.author.dto.UpdateAuthorCommand
-import com.seungkyu.test.application.author.exception.AuthorErrorCode
-import com.seungkyu.test.application.author.exception.AuthorException
 import com.seungkyu.test.application.author.ports.output.repository.AuthorRepository
 import com.seungkyu.test.domain.author.entity.Author
 import com.seungkyu.test.domain.author.service.AuthorDomainService
@@ -34,7 +32,6 @@ class AuthorServiceImpl(
     override fun authorInfo(authorId: Int): AuthorInfoResponse {
         return authorToAuthorInfoResponse(
             authorRepository.findById(authorId)
-                .orElseThrow { (AuthorException(AuthorErrorCode.AUTHOR_NOT_FOUND)) }
         )
     }
 
@@ -46,7 +43,6 @@ class AuthorServiceImpl(
     @Transactional
     override fun updateAuthor(updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
         val author = authorRepository.findById(updateAuthorCommand.id)
-            .orElseThrow { (AuthorException(AuthorErrorCode.AUTHOR_NOT_FOUND)) }
 
         authorDomainService.updateAuthor(
             author = author,
@@ -62,7 +58,6 @@ class AuthorServiceImpl(
     @Transactional
     override fun deleteAuthor(authorId: Int) {
         authorRepository.findById(authorId)
-            .orElseThrow { (AuthorException(AuthorErrorCode.AUTHOR_NOT_FOUND)) }
         authorRepository.deleteById(authorId)
     }
 
