@@ -7,6 +7,7 @@ import com.seungkyu.test.application.author.dto.UpdateAuthorCommand
 import com.seungkyu.test.application.author.ports.output.repository.AuthorRepository
 import com.seungkyu.test.domain.author.entity.Author
 import com.seungkyu.test.domain.author.service.AuthorDomainService
+import jakarta.validation.Valid
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,7 +18,7 @@ class AuthorServiceImpl(
 ): AuthorService {
 
     @Transactional
-    override fun createAuthor(createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse {
+    override fun createAuthor(@Valid createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse {
         val author = authorDomainService.createAuthor(
             name = createAuthorCommand.name,
             email = createAuthorCommand.email,
@@ -41,7 +42,7 @@ class AuthorServiceImpl(
     }
 
     @Transactional
-    override fun updateAuthor(updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
+    override fun updateAuthor(@Valid updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
         val author = authorRepository.findById(updateAuthorCommand.id)
 
         authorDomainService.updateAuthor(
