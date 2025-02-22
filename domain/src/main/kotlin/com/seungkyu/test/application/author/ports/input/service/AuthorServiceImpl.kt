@@ -1,9 +1,6 @@
 package com.seungkyu.test.application.author.ports.input.service
 
-import com.seungkyu.test.application.author.dto.AuthorInfoResponse
-import com.seungkyu.test.application.author.dto.CreateAuthorResponse
-import com.seungkyu.test.application.author.dto.CreateAuthorCommand
-import com.seungkyu.test.application.author.dto.UpdateAuthorCommand
+import com.seungkyu.test.application.author.dto.*
 import com.seungkyu.test.application.author.ports.output.repository.AuthorRepository
 import com.seungkyu.test.domain.author.entity.Author
 import com.seungkyu.test.domain.author.service.AuthorDomainService
@@ -37,8 +34,10 @@ class AuthorServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun authorsInfo(): List<AuthorInfoResponse> {
-        return authorRepository.findAll().map(::authorToAuthorInfoResponse)
+    override fun authorsInfo(): AuthorInfoResponses {
+        return AuthorInfoResponses(
+            authors = authorRepository.findAll().map(::authorToAuthorInfoResponse)
+        )
     }
 
     @Transactional
