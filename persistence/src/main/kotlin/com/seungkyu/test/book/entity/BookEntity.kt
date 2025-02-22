@@ -8,10 +8,15 @@ data class BookEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,
+
     val title: String,
+
     val description: String,
+
     @Column(unique = true)
     val isbn: String,
+
     val publicationDate: LocalDate,
+
     val authorId: Int,
 )
