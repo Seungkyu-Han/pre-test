@@ -1,12 +1,10 @@
 package com.seungkyu.test.application.author.ports.input.service
 
-import com.seungkyu.test.application.author.dto.AuthorInfoResponse
-import com.seungkyu.test.application.author.dto.CreateAuthorResponse
-import com.seungkyu.test.application.author.dto.CreateAuthorCommand
-import com.seungkyu.test.application.author.dto.UpdateAuthorCommand
+import com.seungkyu.test.application.author.dto.*
 import com.seungkyu.test.application.author.ports.output.repository.AuthorRepository
 import com.seungkyu.test.domain.author.entity.Author
 import com.seungkyu.test.domain.author.service.AuthorDomainService
+import jakarta.validation.Valid
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,7 +15,7 @@ class AuthorServiceImpl(
 ): AuthorService {
 
     @Transactional
-    override fun createAuthor(createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse {
+    override fun createAuthor(@Valid createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse {
         val author = authorDomainService.createAuthor(
             name = createAuthorCommand.name,
             email = createAuthorCommand.email,
@@ -36,13 +34,17 @@ class AuthorServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun authorsInfo(): List<AuthorInfoResponse> {
-        return authorRepository.findAll().map(::authorToAuthorInfoResponse)
+    override fun authorsInfo(): AuthorInfoResponses {
+        return AuthorInfoResponses(
+            authors = authorRepository.findAll().map(::authorToAuthorInfoResponse)
+        )
     }
 
     @Transactional
-    override fun updateAuthor(updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
-        val author = authorRepository.findById(updateAuthorCommand.id)
+    override fun updateAuthor(
+        id: Int,
+        @Valid updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
+        val author = authorRepository.findById(id)
 
         authorDomainService.updateAuthor(
             author = author,

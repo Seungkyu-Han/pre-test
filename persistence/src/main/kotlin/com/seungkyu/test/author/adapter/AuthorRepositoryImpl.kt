@@ -6,7 +6,8 @@ import com.seungkyu.test.application.author.ports.output.repository.AuthorReposi
 import com.seungkyu.test.author.entity.AuthorEntity
 import com.seungkyu.test.author.repository.AuthorJPARepository
 import com.seungkyu.test.domain.author.entity.Author
-import org.hibernate.exception.ConstraintViolationException
+import org.springframework.dao.DataIntegrityViolationException
+
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -21,7 +22,7 @@ class AuthorRepositoryImpl(
                     authorToAuthorEntity(author)
                 )
             )
-        }catch (e: ConstraintViolationException){
+        }catch (e: DataIntegrityViolationException){
             throw AuthorException(AuthorErrorCode.AUTHOR_DUPLICATE_EMAIL)
         }
     }

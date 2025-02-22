@@ -9,9 +9,10 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":domain"))
     implementation("org.springframework.boot:spring-boot-starter")
-
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1")
 }
 
 tasks.test {
