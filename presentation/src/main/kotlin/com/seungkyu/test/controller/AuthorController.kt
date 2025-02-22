@@ -1,11 +1,14 @@
 package com.seungkyu.test.controller
 
+import com.seungkyu.test.application.author.dto.AuthorInfoResponse
 import com.seungkyu.test.application.author.dto.AuthorInfoResponses
 import com.seungkyu.test.application.author.dto.CreateAuthorCommand
 import com.seungkyu.test.application.author.dto.CreateAuthorResponse
 import com.seungkyu.test.application.author.ports.input.service.AuthorService
 import com.seungkyu.test.controller.exceptionHandler.errorResponse.ErrorResponseDto
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.Parameters
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -55,4 +58,24 @@ class AuthorController(
     )
     fun getAuthors(): ResponseEntity<AuthorInfoResponses> =
         ResponseEntity.ok(authorService.authorsInfo())
+
+    @GetMapping("/{id}")
+    @Operation(
+        summary = "작가의 상세 정보를 조회하는 API입니다.",
+        description = "아이디를 포함한 전체 작가의 정보가 출력됩니다.\n" +
+                "존재하지 않는 작가는 404에러가 출력됩니다."
+    )
+    @Parameters(
+        Parameter(name = "id", description = "조회할 작가의 id", example = "1", required = true),
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회에 성공했습니다.",
+            content = [Content(schema = Schema(implementation = AuthorInfoResponse::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+        ApiResponse(responseCode = "404", description = "존재하지 않는 작가입니다.",
+            content = [Content(schema = Schema(implementation = ErrorResponseDto::class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+    )
+    fun getAuthor(@PathVariable id: Int): ResponseEntity<AuthorInfoResponse> =
+        ResponseEntity.ok(authorService.authorInfo(authorId = id))
 }
