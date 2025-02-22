@@ -12,4 +12,9 @@ class AuthorDomainServiceImpl: AuthorDomainService {
             name = name,
             email = email
         )
+
+    override fun updateAuthor(author: Author, name: String, email: String) {
+        author.name = name
+        author.email = email
+    }
 }
