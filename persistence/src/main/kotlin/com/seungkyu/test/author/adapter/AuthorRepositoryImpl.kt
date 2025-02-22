@@ -6,6 +6,7 @@ import com.seungkyu.test.application.author.ports.output.repository.AuthorReposi
 import com.seungkyu.test.author.entity.AuthorEntity
 import com.seungkyu.test.author.repository.AuthorJPARepository
 import com.seungkyu.test.domain.author.entity.Author
+import org.hibernate.exception.ConstraintViolationException
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -13,12 +14,18 @@ class AuthorRepositoryImpl(
     private val authorJPARepository: AuthorJPARepository
 ): AuthorRepository {
 
-    override fun save(author: Author): Author =
-        authorEntityToAuthor(
-            authorJPARepository.save(
-                authorToAuthorEntity(author)
+    override fun save(author: Author): Author{
+        return try {
+            authorEntityToAuthor(
+                authorJPARepository.save(
+                    authorToAuthorEntity(author)
+                )
             )
-        )
+        }catch (e: ConstraintViolationException){
+            throw AuthorException(AuthorErrorCode.AUTHOR_DUPLICATE_EMAIL)
+        }
+    }
+
 
     override fun findById(id: Int): Author =
         authorEntityToAuthor(

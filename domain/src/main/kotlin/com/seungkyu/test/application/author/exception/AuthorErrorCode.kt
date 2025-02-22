@@ -7,6 +7,7 @@ enum class AuthorErrorCode(
     val message: String
 ) {
 
-    AUTHOR_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 작가를 찾을 수 없습니다.")
+    AUTHOR_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 작가를 찾을 수 없습니다."),
+    AUTHOR_DUPLICATE_EMAIL(HttpStatus.CONFLICT, "중복되는 이메일이 존재합니다.")
 
 }
