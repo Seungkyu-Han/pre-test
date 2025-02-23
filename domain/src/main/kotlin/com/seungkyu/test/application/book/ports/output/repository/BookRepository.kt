@@ -13,4 +13,6 @@ interface BookRepository {
     fun findAll(page: Int, pageSize: Int, bookSortEnum: BookSortEnum): BooksInfoDao
 
     fun deleteById(id: Int)
+
+    fun existsByAuthorId(authorId: Int): Boolean
 }

@@ -9,5 +9,6 @@ enum class BookErrorCode(
 
     INVALID_ISBN(HttpStatus.BAD_REQUEST, "유효하지 않은 ISBN입니다."),
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 책을 찾을 수 없습니다."),
+    AUTHOR_NOT_FOUND(HttpStatus.NOT_FOUND," 해당 작가를 찾을 수 없습니다.")
 
 }

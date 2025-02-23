@@ -9,21 +9,32 @@ import com.seungkyu.test.author.entity.AuthorEntity
 import com.seungkyu.test.book.entity.BookEntity
 import com.seungkyu.test.book.repository.BookJPARepository
 import com.seungkyu.test.domain.book.entity.Book
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class BookRepositoryImpl(
     private val bookJPARepository: BookJPARepository
 ): BookRepository {
 
+    @Transactional
     override fun save(book: Book): Book {
-        return bookEntityToBook(
+        return try {
+            bookEntityToBook(
                 bookJPARepository.save(
                     bookToBookEntity(book)
                 )
             )
+        }catch (dataIntegrityViolationException: DataIntegrityViolationException){
+            throw BookException(BookErrorCode.AUTHOR_NOT_FOUND)
+        }
+        catch(jpaObjectRetrievalFailureException: JpaObjectRetrievalFailureException){
+            throw BookException(BookErrorCode.AUTHOR_NOT_FOUND)
+        }
     }
 
     override fun findById(id: Int): Book =
@@ -44,6 +55,15 @@ class BookRepositoryImpl(
 
     override fun deleteById(id: Int) =
         bookJPARepository.deleteById(id)
+
+    override fun existsByAuthorId(authorId: Int): Boolean =
+        bookJPARepository.existsByAuthor(
+            AuthorEntity(
+                id = authorId,
+                name = "",
+                email = ""
+            )
+        )
 
     private fun bookToBookEntity(book: Book): BookEntity {
         return BookEntity(

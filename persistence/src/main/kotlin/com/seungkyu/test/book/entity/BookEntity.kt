@@ -14,7 +14,6 @@ data class BookEntity(
 
     val description: String,
 
-    @Column(unique = true)
     val isbn: String,
 
     val publicationDate: LocalDate,

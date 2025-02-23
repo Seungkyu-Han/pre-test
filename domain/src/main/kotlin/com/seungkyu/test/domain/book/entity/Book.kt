@@ -11,6 +11,8 @@ data class Book(
     val publicationDate: LocalDate,
     val authorId: Int,
 ){
+
+
     fun validateIsbn(){
         validateIsbnLength()
         validateIsbnLang()
@@ -31,5 +33,18 @@ data class Book(
     private fun validateIsbnCheckDigit(){
         if (isbn.last() != '0')
             throw BookDomainException("ISBN의 체크 digit이 유효하지 않습니다.")
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Book
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id ?: 0
     }
 }
