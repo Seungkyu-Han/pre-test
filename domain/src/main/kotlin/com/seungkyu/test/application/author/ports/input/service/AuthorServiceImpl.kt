@@ -19,9 +19,16 @@ class AuthorServiceImpl(
 
     @Transactional
     override fun createAuthor(createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse {
+
+        val existedEmail = authorRepository.findByEmail(createAuthorCommand.email!!)
+
+        if (existedEmail.isPresent) {
+            throw AuthorException(AuthorErrorCode.AUTHOR_DUPLICATE_EMAIL)
+        }
+
         val author = authorDomainService.createAuthor(
             name = createAuthorCommand.name!!,
-            email = createAuthorCommand.email!!,
+            email = createAuthorCommand.email,
         )
 
         val savedAuthor = authorRepository.save(author)
@@ -49,10 +56,16 @@ class AuthorServiceImpl(
         updateAuthorCommand: UpdateAuthorCommand): AuthorInfoResponse {
         val author = authorRepository.findById(id)
 
+        val existedEmail = authorRepository.findByEmail(updateAuthorCommand.email!!)
+
+        if(existedEmail.isPresent && existedEmail.get().id != id) {
+            throw AuthorException(AuthorErrorCode.AUTHOR_DUPLICATE_EMAIL)
+        }
+
         authorDomainService.updateAuthor(
             author = author,
             name = updateAuthorCommand.name!!,
-            email = updateAuthorCommand.email!!,
+            email = updateAuthorCommand.email,
         )
 
         val savedUser = authorRepository.save(author)

@@ -30,7 +30,6 @@ class BookRepositoryImpl(
                 )
             )
         }catch (dataIntegrityViolationException: DataIntegrityViolationException){
-            println(dataIntegrityViolationException)
             throw BookException(BookErrorCode.AUTHOR_NOT_FOUND)
         }
         catch(jpaObjectRetrievalFailureException: JpaObjectRetrievalFailureException){

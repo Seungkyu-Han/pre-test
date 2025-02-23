@@ -9,6 +9,7 @@ import com.seungkyu.test.domain.author.entity.Author
 import org.springframework.dao.DataIntegrityViolationException
 
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class AuthorRepositoryImpl(
@@ -40,6 +41,19 @@ class AuthorRepositoryImpl(
 
     override fun deleteById(id: Int) =
         authorJPARepository.deleteById(id)
+
+    override fun findByEmail(email: String): Optional<Author> {
+        val optionalAuthor = authorJPARepository.findByEmail(email)
+
+        return if (optionalAuthor.isPresent){
+            Optional.of(
+                authorEntityToAuthor(
+                    optionalAuthor.get()
+                )
+            )
+        } else
+            Optional.empty()
+    }
 
     private fun authorToAuthorEntity(author: Author): AuthorEntity {
         return AuthorEntity(
