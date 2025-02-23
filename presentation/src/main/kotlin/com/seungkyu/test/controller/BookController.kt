@@ -51,6 +51,11 @@ class BookController(
         description = "아이디를 포함한 전체 도서의 정보가 출력됩니다.\n" +
                 "도서가 존재하지 않는 경우 404에러가 아닌 빈 배열이 출력됩니다."
     )
+    @Parameters(
+        Parameter(name = "page", description = "페이지의 번호입니다."),
+        Parameter(name = "pageSize", description = "한 페이지에서 출력되는 요소의 개수입니다."),
+        Parameter(name = "sortKey", description = "정렬 기준입니다.")
+    )
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "조회에 성공했습니다.",
             content = [Content(schema = Schema(implementation = BookInfoResponses::class),
