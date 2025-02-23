@@ -56,7 +56,7 @@ class BookServiceImpl(
     }
 
     @Transactional
-    override fun updateAuthor(id: Int, updateBookCommand: UpdateBookCommand): BookInfoResponse {
+    override fun updateBook(id: Int, updateBookCommand: UpdateBookCommand): BookInfoResponse {
         val book = bookRepository.findById(id)
 
         val newBook = try {
