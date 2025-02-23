@@ -5,7 +5,7 @@ import jakarta.validation.Valid
 
 interface AuthorService {
 
-    fun createAuthor(@Valid createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse
+    fun createAuthor(createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse
 
     fun authorInfo(authorId: Int): AuthorInfoResponse
 
