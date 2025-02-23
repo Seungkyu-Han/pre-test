@@ -1,7 +1,10 @@
 package com.seungkyu.test.application.author.ports.input.service
 
 import com.seungkyu.test.application.author.dto.*
+import com.seungkyu.test.application.author.exception.AuthorErrorCode
+import com.seungkyu.test.application.author.exception.AuthorException
 import com.seungkyu.test.application.author.ports.output.repository.AuthorRepository
+import com.seungkyu.test.application.book.ports.output.repository.BookRepository
 import com.seungkyu.test.domain.author.entity.Author
 import com.seungkyu.test.domain.author.service.AuthorDomainService
 import jakarta.validation.Valid
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class AuthorServiceImpl(
     private val authorRepository: AuthorRepository,
+    private val bookRepository: BookRepository,
     private val authorDomainService: AuthorDomainService
 ): AuthorService {
 
@@ -60,6 +64,8 @@ class AuthorServiceImpl(
     @Transactional
     override fun deleteAuthor(authorId: Int) {
         authorRepository.findById(authorId)
+        if(bookRepository.existsByAuthorId(authorId))
+            throw AuthorException(AuthorErrorCode.EXIST_RELATED_BOOK)
         authorRepository.deleteById(authorId)
     }
 

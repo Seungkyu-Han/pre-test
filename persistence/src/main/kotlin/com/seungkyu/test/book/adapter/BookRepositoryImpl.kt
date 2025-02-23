@@ -50,6 +50,15 @@ class BookRepositoryImpl(
     override fun deleteById(id: Int) =
         bookJPARepository.deleteById(id)
 
+    override fun existsByAuthorId(authorId: Int): Boolean =
+        bookJPARepository.existsByAuthor(
+            AuthorEntity(
+                id = authorId,
+                name = "",
+                email = ""
+            )
+        )
+
     private fun bookToBookEntity(book: Book): BookEntity {
         return BookEntity(
             id = book.id,
