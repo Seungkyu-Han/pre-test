@@ -12,13 +12,16 @@ import com.seungkyu.test.domain.book.entity.Book
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class BookRepositoryImpl(
     private val bookJPARepository: BookJPARepository
 ): BookRepository {
 
+    @Transactional
     override fun save(book: Book): Book {
         return try {
             bookEntityToBook(
@@ -27,6 +30,10 @@ class BookRepositoryImpl(
                 )
             )
         }catch (dataIntegrityViolationException: DataIntegrityViolationException){
+            println(dataIntegrityViolationException)
+            throw BookException(BookErrorCode.AUTHOR_NOT_FOUND)
+        }
+        catch(jpaObjectRetrievalFailureException: JpaObjectRetrievalFailureException){
             throw BookException(BookErrorCode.AUTHOR_NOT_FOUND)
         }
     }
