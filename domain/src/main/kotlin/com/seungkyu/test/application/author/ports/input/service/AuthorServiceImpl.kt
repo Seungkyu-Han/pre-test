@@ -17,8 +17,8 @@ class AuthorServiceImpl(
     @Transactional
     override fun createAuthor(@Valid createAuthorCommand: CreateAuthorCommand): CreateAuthorResponse {
         val author = authorDomainService.createAuthor(
-            name = createAuthorCommand.name,
-            email = createAuthorCommand.email,
+            name = createAuthorCommand.name!!,
+            email = createAuthorCommand.email!!,
         )
 
         val savedAuthor = authorRepository.save(author)
@@ -48,8 +48,8 @@ class AuthorServiceImpl(
 
         authorDomainService.updateAuthor(
             author = author,
-            name = updateAuthorCommand.name,
-            email = updateAuthorCommand.email,
+            name = updateAuthorCommand.name!!,
+            email = updateAuthorCommand.email!!,
         )
 
         val savedUser = authorRepository.save(author)

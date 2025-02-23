@@ -21,11 +21,11 @@ class BookServiceImpl(
 
         val book = try{
              bookDomainService.createBook(
-                title = createBookCommand.title,
-                isbn = createBookCommand.isbn,
-                authorId = createBookCommand.authorId,
-                description = createBookCommand.description,
-                publicationDate = createBookCommand.publicationDate
+                title = createBookCommand.title!!,
+                isbn = createBookCommand.isbn!!,
+                authorId = createBookCommand.authorId!!,
+                description = createBookCommand.description!!,
+                publicationDate = createBookCommand.publicationDate!!
             )
         } catch(bookDomainException: BookDomainException) {
             throw BookException(BookErrorCode.INVALID_ISBN)
@@ -62,11 +62,11 @@ class BookServiceImpl(
         val newBook = try {
             bookRepository.save(bookDomainService.updateBook(
                 id = book.id!!,
-                title = updateBookCommand.title,
-                isbn = updateBookCommand.isbn,
-                authorId = updateBookCommand.authorId,
-                description = updateBookCommand.description,
-                publicationDate = updateBookCommand.publicationDate)
+                title = updateBookCommand.title!!,
+                isbn = updateBookCommand.isbn!!,
+                authorId = updateBookCommand.authorId!!,
+                description = updateBookCommand.description!!,
+                publicationDate = updateBookCommand.publicationDate!!)
             )
         } catch(bookDomainException: BookDomainException) {
             throw BookException(BookErrorCode.INVALID_ISBN)

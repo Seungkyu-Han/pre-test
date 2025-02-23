@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -41,7 +42,7 @@ class BookController(
             content = [Content(schema = Schema(implementation = ErrorResponseDto::class),
                 mediaType = MediaType.APPLICATION_JSON_VALUE)])
     )
-    fun postBook(@RequestBody createBookCommand: CreateBookCommand): ResponseEntity<CreateBookResponse> =
+    fun postBook(@RequestBody @Valid createBookCommand: CreateBookCommand): ResponseEntity<CreateBookResponse> =
         ResponseEntity.ok(bookService.createBook(createBookCommand))
 
     @GetMapping
@@ -104,7 +105,7 @@ class BookController(
     )
     fun putBook(
         @PathVariable id: Int,
-        @RequestBody updateBookCommand: UpdateBookCommand
+        @RequestBody @Valid updateBookCommand: UpdateBookCommand
     ): ResponseEntity<BookInfoResponse> =
         ResponseEntity.ok(bookService.updateBook(id = id, updateBookCommand = updateBookCommand))
 
