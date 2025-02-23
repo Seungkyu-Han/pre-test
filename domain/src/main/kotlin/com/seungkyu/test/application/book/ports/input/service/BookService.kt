@@ -11,7 +11,7 @@ interface BookService {
 
     fun booksInfo(page: Int, pageSize: Int, bookSortEnum: BookSortEnum): BookInfoResponses
 
-    fun updateAuthor(
+    fun updateBook(
         id: Int,
         @Valid updateBookCommand: UpdateBookCommand
     ): BookInfoResponse
