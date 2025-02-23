@@ -1,4 +1,5 @@
 package com.seungkyu.test.application.book.exception
 
-class BookException {
-}
+class BookException(
+    val errorCode: BookErrorCode,
+): RuntimeException(errorCode.message)
