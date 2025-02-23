@@ -1,10 +1,14 @@
 package com.seungkyu.test.application.book.ports.input.service
 
 import com.seungkyu.test.application.book.dto.*
+import com.seungkyu.test.application.book.exception.BookErrorCode
+import com.seungkyu.test.application.book.exception.BookException
 import com.seungkyu.test.application.book.ports.output.repository.BookRepository
 import com.seungkyu.test.domain.book.entity.Book
+import com.seungkyu.test.domain.book.exception.BookDomainException
 import com.seungkyu.test.domain.book.service.BookDomainService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BookServiceImpl(
@@ -12,26 +16,34 @@ class BookServiceImpl(
     private val bookDomainService: BookDomainService
 ): BookService {
 
+    @Transactional
     override fun createBook(createBookCommand: CreateBookCommand): CreateBookResponse {
-        val book = bookDomainService.createBook(
-            title = createBookCommand.title,
-            isbn = createBookCommand.isbn,
-            authorId = createBookCommand.authorId,
-            description = createBookCommand.description,
-            publicationDate = createBookCommand.publicationDate
-        )
+
+        val book = try{
+             bookDomainService.createBook(
+                title = createBookCommand.title,
+                isbn = createBookCommand.isbn,
+                authorId = createBookCommand.authorId,
+                description = createBookCommand.description,
+                publicationDate = createBookCommand.publicationDate
+            )
+        } catch(bookDomainException: BookDomainException) {
+            throw BookException(BookErrorCode.INVALID_ISBN)
+        }
 
         val savedBook = bookRepository.save(book)
 
         return bookToCreateBookResponse(savedBook)
     }
 
+    @Transactional(readOnly = true)
     override fun bookInfo(bookId: Int): BookInfoResponse {
         return bookToBookInfoResponse(
             bookRepository.findById(bookId)
         )
     }
 
+    @Transactional(readOnly = true)
     override fun booksInfo(page: Int, pageSize: Int, bookSortEnum: BookSortEnum): BookInfoResponses {
         val booksInfoDao = bookRepository.findAll(page, pageSize, bookSortEnum)
 
@@ -43,21 +55,27 @@ class BookServiceImpl(
         return bookInfoResponses
     }
 
-    override fun updateAuthor(id: Int, updateBookCommand: UpdateBookCommand): BookInfoResponse {
+    @Transactional
+    override fun updateBook(id: Int, updateBookCommand: UpdateBookCommand): BookInfoResponse {
         val book = bookRepository.findById(id)
 
-        val newBook = bookRepository.save(bookDomainService.updateBook(
-            id = book.id!!,
-            title = updateBookCommand.title,
-            isbn = updateBookCommand.isbn,
-            authorId = updateBookCommand.authorId,
-            description = updateBookCommand.description,
-            publicationDate = updateBookCommand.publicationDate
-        ))
+        val newBook = try {
+            bookRepository.save(bookDomainService.updateBook(
+                id = book.id!!,
+                title = updateBookCommand.title,
+                isbn = updateBookCommand.isbn,
+                authorId = updateBookCommand.authorId,
+                description = updateBookCommand.description,
+                publicationDate = updateBookCommand.publicationDate)
+            )
+        } catch(bookDomainException: BookDomainException) {
+            throw BookException(BookErrorCode.INVALID_ISBN)
+        }
 
         return bookToBookInfoResponse(newBook)
     }
 
+    @Transactional
     override fun deleteBook(bookId: Int) {
         bookRepository.findById(bookId)
         bookRepository.deleteById(bookId)
